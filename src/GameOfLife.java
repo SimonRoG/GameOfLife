@@ -5,13 +5,13 @@ import javax.swing.*;
 
 public class GameOfLife extends Canvas {
 
-    private static final int ROWS = 100,
+    private static final int ROWS = 50,
         COLS = 100,
         CELL = 12;
     private static final int BG = 0xFF1e1e1e,
         FG = 0xFFd4d4d4;
 
-    private final GameOfLifeSeq seq = new GameOfLifeSeq(ROWS);
+    private final GameOfLifeSeq seq = new GameOfLifeSeq(ROWS, COLS, 1);
     volatile boolean running = false;
     private volatile int delay = 100;
     private Thread gameThread;
@@ -45,6 +45,12 @@ public class GameOfLife extends Canvas {
         buffer = new BufferedImage(COLS * CELL, ROWS * CELL, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt) buffer.getRaster().getDataBuffer()).getData();
         java.util.Arrays.fill(pixels, BG);
+        paintAll();
+        drawFrame();
+    }
+
+    @Override
+    public void paint(Graphics g) {
         drawFrame();
     }
 

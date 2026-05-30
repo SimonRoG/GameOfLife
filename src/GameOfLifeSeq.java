@@ -2,25 +2,26 @@ import java.util.Random;
 
 public class GameOfLifeSeq {
 
-    final int N;
+    final int ROWS, COLS;
     boolean[] grid;
 
-    public GameOfLifeSeq(int n) {
-        N = n;
-        grid = new boolean[N * N];
+    public GameOfLifeSeq(int rows, int cols) {
+        ROWS = rows;
+        COLS = cols;
+        grid = new boolean[ROWS * COLS];
     }
 
-    public GameOfLifeSeq(int n, long seed) {
-        this(n);
+    public GameOfLifeSeq(int rows, int cols, long seed) {
+        this(rows, cols);
         Random rng = new Random(seed);
         for (int i = 0; i < grid.length; i++) grid[i] = rng.nextBoolean();
     }
 
     public void computeStep() {
-        boolean[] next = new boolean[N * N];
-        for (int r = 0; r < N; r++) for (int c = 0; c < N; c++) {
+        boolean[] next = new boolean[ROWS * COLS];
+        for (int r = 0; r < ROWS; r++) for (int c = 0; c < COLS; c++) {
             int n = neighbors(r, c);
-            next[r * N + c] = grid[r * N + c] ? (n == 2 || n == 3) : (n == 3);
+            next[r * COLS + c] = grid[r * COLS + c] ? (n == 2 || n == 3) : (n == 3);
         }
         grid = next;
     }
@@ -29,9 +30,9 @@ public class GameOfLifeSeq {
         int count = 0;
         for (int dr = -1; dr <= 1; dr++) for (int dc = -1; dc <= 1; dc++) {
             if (dr == 0 && dc == 0) continue;
-            int nr = (r + dr + N) % N,
-                nc = (c + dc + N) % N;
-            if (grid[nr * N + nc]) count++;
+            int nr = (r + dr + ROWS) % ROWS,
+                nc = (c + dc + COLS) % COLS;
+            if (grid[nr * COLS + nc]) count++;
         }
         return count;
     }

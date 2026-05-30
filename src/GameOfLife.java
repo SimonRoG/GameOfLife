@@ -12,12 +12,12 @@ public class GameOfLife extends Canvas {
         FG = 0xFFd4d4d4;
 
     private final GameOfLifeSeq seq = new GameOfLifeSeq(ROWS);
-    private volatile boolean running = false;
+    volatile boolean running = false;
     private volatile int delay = 100;
     private Thread gameThread;
     private BufferedImage buffer;
     private int[] pixels;
-    private final JButton startBtn = new JButton("Start");
+    final JButton startBtn = new JButton("Start");
 
     public GameOfLife() {
         setPreferredSize(new Dimension(COLS * CELL, ROWS * CELL));
@@ -90,7 +90,7 @@ public class GameOfLife extends Canvas {
         paintAll();
     }
 
-    private void startGame() {
+    void startGame() {
         if (running) return;
         running = true;
         gameThread = new Thread(() -> {
@@ -110,7 +110,7 @@ public class GameOfLife extends Canvas {
         gameThread.start();
     }
 
-    private void stopGame() {
+    void stopGame() {
         running = false;
         if (gameThread != null) gameThread.interrupt();
     }
@@ -124,47 +124,5 @@ public class GameOfLife extends Canvas {
         java.util.Arrays.fill(seq.grid, false);
         java.util.Arrays.fill(pixels, BG);
         drawFrame();
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Game of Life");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setResizable(false);
-
-            GameOfLife game = new GameOfLife();
-
-            JPanel bar = new JPanel();
-            bar.setBackground(Color.DARK_GRAY);
-            for (String label : new String[] { "Start", "Step", "Clear" }) {
-                JButton btn = label.equals("Start") ? game.startBtn : new JButton(label);
-                btn.setActionCommand(label);
-                btn.addActionListener(e -> {
-                    switch (e.getActionCommand()) {
-                        case "Start" -> {
-                            game.startGame();
-                            game.startBtn.setText("Stop");
-                            game.startBtn.setActionCommand("Stop");
-                        }
-                        case "Stop" -> {
-                            game.stopGame();
-                            game.startBtn.setText("Start");
-                            game.startBtn.setActionCommand("Start");
-                        }
-                        case "Step" -> {
-                            if (!game.running) game.singleStep();
-                        }
-                        case "Clear" -> game.clear();
-                    }
-                });
-                bar.add(btn);
-            }
-
-            frame.add(game, BorderLayout.CENTER);
-            frame.add(bar, BorderLayout.NORTH);
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
-        });
     }
 }

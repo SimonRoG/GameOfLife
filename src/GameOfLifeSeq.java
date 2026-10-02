@@ -3,12 +3,13 @@ import java.util.Random;
 public class GameOfLifeSeq implements LifeEngine {
 
     final int ROWS, COLS;
-    boolean[] grid;
+    boolean[] grid, next;
 
     public GameOfLifeSeq(int rows, int cols) {
         ROWS = rows;
         COLS = cols;
         grid = new boolean[ROWS * COLS];
+        next = new boolean[ROWS * COLS];
     }
 
     public GameOfLifeSeq(int rows, int cols, long seed) {
@@ -19,23 +20,32 @@ public class GameOfLifeSeq implements LifeEngine {
 
     @Override
     public void computeStep() {
-        boolean[] next = new boolean[ROWS * COLS];
-        for (int r = 0; r < ROWS; r++) for (int c = 0; c < COLS; c++) {
-            int n = neighbors(r, c);
-            next[r * COLS + c] = grid[r * COLS + c] ? (n == 2 || n == 3) : (n == 3);
-        }
+        computeRows(0, ROWS);
+        boolean[] t = grid;
         grid = next;
+        next = t;
     }
 
-    private int neighbors(int r, int c) {
-        int count = 0;
-        for (int dr = -1; dr <= 1; dr++) for (int dc = -1; dc <= 1; dc++) {
-            if (dr == 0 && dc == 0) continue;
-            int nr = (r + dr + ROWS) % ROWS,
-                nc = (c + dc + COLS) % COLS;
-            if (grid[nr * COLS + nc]) count++;
+    void computeRows(int from, int to) {
+        for (int r = from; r < to; r++) {
+            int up = (r == 0 ? ROWS - 1 : r - 1) * COLS,
+                mid = r * COLS,
+                down = (r == ROWS - 1 ? 0 : r + 1) * COLS;
+            for (int c = 0; c < COLS; c++) {
+                int n = neighbors(up, mid, down, c);
+                next[mid + c] = grid[mid + c] ? (n == 2 || n == 3) : (n == 3);
+            }
         }
-        return count;
+    }
+
+    private int neighbors(int up, int mid, int down, int c) {
+        int l = c == 0 ? COLS - 1 : c - 1,
+            rt = c == COLS - 1 ? 0 : c + 1;
+        return rowCount(up, l, c, rt) + rowCount(down, l, c, rt) + (grid[mid + l] ? 1 : 0) + (grid[mid + rt] ? 1 : 0);
+    }
+
+    private int rowCount(int row, int l, int c, int rt) {
+        return (grid[row + l] ? 1 : 0) + (grid[row + c] ? 1 : 0) + (grid[row + rt] ? 1 : 0);
     }
 
     public long measureStep() {

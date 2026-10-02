@@ -11,7 +11,7 @@ public class GameOfLife extends Canvas {
     private static final int BG = 0xFF1e1e1e,
         FG = 0xFFd4d4d4;
 
-    private final GameOfLifeSeq seq = new GameOfLifeSeq(ROWS, COLS, 1);
+    private final LifeEngine engine = new GameOfLifeSeq(ROWS, COLS, 1);
     volatile boolean running = false;
     private volatile int delay = 100;
     private Thread gameThread;
@@ -58,14 +58,14 @@ public class GameOfLife extends Canvas {
         int r = e.getY() / CELL,
             c = e.getX() / CELL;
         if (r >= 0 && r < ROWS && c >= 0 && c < COLS) {
-            seq.grid[r * COLS + c] = !seq.grid[r * COLS + c];
+            engine.grid()[r * COLS + c] = !engine.grid()[r * COLS + c];
             paintCell(r, c);
             drawFrame();
         }
     }
 
     private void paintCell(int r, int c) {
-        int color = seq.grid[r * COLS + c] ? FG : BG,
+        int color = engine.grid()[r * COLS + c] ? FG : BG,
             stride = COLS * CELL;
         for (int dy = 1; dy < CELL; dy++) for (int dx = 1; dx < CELL; dx++) pixels[(r * CELL + dy) * stride + c * CELL + dx] = color;
     }
@@ -73,7 +73,7 @@ public class GameOfLife extends Canvas {
     private void paintAll() {
         int stride = COLS * CELL;
         for (int r = 0; r < ROWS; r++) for (int c = 0; c < COLS; c++) {
-            int color = seq.grid[r * COLS + c] ? FG : BG;
+            int color = engine.grid()[r * COLS + c] ? FG : BG;
             for (int dy = 1; dy < CELL; dy++) for (int dx = 1; dx < CELL; dx++) pixels[(r * CELL + dy) * stride + c * CELL + dx] = color;
         }
     }
@@ -92,7 +92,7 @@ public class GameOfLife extends Canvas {
     }
 
     private synchronized void computeStep() {
-        seq.computeStep();
+        engine.computeStep();
         paintAll();
     }
 
@@ -127,7 +127,7 @@ public class GameOfLife extends Canvas {
     }
 
     synchronized void clear() {
-        java.util.Arrays.fill(seq.grid, false);
+        java.util.Arrays.fill(engine.grid(), false);
         java.util.Arrays.fill(pixels, BG);
         drawFrame();
     }

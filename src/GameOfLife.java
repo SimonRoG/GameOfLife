@@ -11,7 +11,7 @@ public class GameOfLife extends Canvas {
     private static final int BG = 0xFF1e1e1e,
         FG = 0xFFd4d4d4;
 
-    private final LifeEngine engine = new GameOfLifeSeq(ROWS, COLS, 1);
+    private final LifeEngine engine = new GameOfLifePar(ROWS, COLS, 4, 1);
     volatile boolean running = false;
     private volatile int delay = 100;
     private Thread gameThread;

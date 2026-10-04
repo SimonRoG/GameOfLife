@@ -4,7 +4,7 @@ public class Test {
 
     static void gliderTest() {
         int n = 5;
-        GameOfLifeSeq g = new GameOfLifeSeq(n, n);
+        GameOfLifePar g = new GameOfLifePar(n, n, 4);
         // _ @ _ _
         // _ _ @ _
         // @ @ @ _
@@ -18,18 +18,20 @@ public class Test {
         // _ @ @ @
         exp[1 * n + 2] = exp[2 * n + 3] = exp[3 * n + 1] = exp[3 * n + 2] = exp[3 * n + 3] = true;
         System.out.println("glider test: " + (Arrays.equals(exp, g.grid) ? "OK" : "FAIL"));
+        g.shutdown();
     }
 
     static void benchmarkTest() {
-        int[] sizes = { 500, 1000, 2000, 4000 };
+        int[] sizes = { 500, 1000, 2000, 4000, 8000 };
         int steps = 10;
         System.out.println("\n| N | T |");
         System.out.println("| --- | --- |");
         for (int n : sizes) {
-            GameOfLifeSeq g = new GameOfLifeSeq(n, n, 1);
+            GameOfLifePar g = new GameOfLifePar(n, n, 4, 1);
             long total = 0;
             for (int i = 0; i < steps; i++) total += g.measureStep();
             System.out.println("| " + n + " | " + total / steps + " |");
+            g.shutdown();
         }
     }
 

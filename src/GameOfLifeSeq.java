@@ -1,19 +1,13 @@
 import java.util.Random;
 
-public class GameOfLifeSeq implements LifeEngine {
-
-    final int ROWS, COLS;
-    boolean[] grid, next;
+public class GameOfLifeSeq extends LifeEngine {
 
     public GameOfLifeSeq(int rows, int cols) {
-        ROWS = rows;
-        COLS = cols;
-        grid = new boolean[ROWS * COLS];
-        next = new boolean[ROWS * COLS];
+        super(rows, cols);
     }
 
     public GameOfLifeSeq(int rows, int cols, long seed) {
-        this(rows, cols);
+        super(rows, cols);
         for (int r = 0; r < ROWS; r++) {
             Random rng = new Random(seed + r);
             for (int c = 0; c < COLS; c++) grid[r * COLS + c] = rng.nextBoolean();
@@ -48,26 +42,5 @@ public class GameOfLifeSeq implements LifeEngine {
 
     private int rowCount(int row, int l, int c, int rt) {
         return (grid[row + l] ? 1 : 0) + (grid[row + c] ? 1 : 0) + (grid[row + rt] ? 1 : 0);
-    }
-
-    public long measureStep() {
-        long t = System.currentTimeMillis();
-        computeStep();
-        return System.currentTimeMillis() - t;
-    }
-
-    @Override
-    public boolean[] grid() {
-        return grid;
-    }
-
-    @Override
-    public int rows() {
-        return ROWS;
-    }
-
-    @Override
-    public int cols() {
-        return COLS;
     }
 }

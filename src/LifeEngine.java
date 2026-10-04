@@ -1,9 +1,32 @@
-public interface LifeEngine {
-    void computeStep();
+public abstract class LifeEngine {
 
-    boolean[] grid();
+    final int ROWS, COLS;
+    boolean[] grid, next;
 
-    int rows();
+    LifeEngine(int rows, int cols) {
+        ROWS = rows;
+        COLS = cols;
+        grid = new boolean[ROWS * COLS];
+        next = new boolean[ROWS * COLS];
+    }
 
-    int cols();
+    public abstract void computeStep();
+
+    public long measureStep() {
+        long t = System.currentTimeMillis();
+        computeStep();
+        return System.currentTimeMillis() - t;
+    }
+
+    public boolean[] grid() {
+        return grid;
+    }
+
+    public int rows() {
+        return ROWS;
+    }
+
+    public int cols() {
+        return COLS;
+    }
 }

@@ -1,3 +1,5 @@
+import gol.GameOfLifePar;
+import gol.GameOfLifeSeq;
 import java.util.Arrays;
 
 public class Test {

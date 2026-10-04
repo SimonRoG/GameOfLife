@@ -1,3 +1,4 @@
+import gol.GameOfLife;
 import java.awt.*;
 import javax.swing.*;
 

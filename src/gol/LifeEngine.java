@@ -1,3 +1,5 @@
+package gol;
+
 public abstract class LifeEngine {
 
     final int ROWS, COLS;

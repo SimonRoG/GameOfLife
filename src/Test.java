@@ -41,7 +41,7 @@ public class Test {
 
     static void gliderParTest() {
         int n = 5;
-        GameOfLifePar par = new GameOfLifePar(n, n, 4);
+        GameOfLifePar par = new GameOfLifePar(n, n, 4, 4);
         System.arraycopy(gliderInit(n), 0, par.grid, 0, n * n);
         for (int i = 0; i < 4; i++) par.computeStep();
         check("glider par", Arrays.equals(gliderExp(n), par.grid));
@@ -53,7 +53,7 @@ public class Test {
         int[] threadCounts = { 1, 2, 4, cores, cores * 2 };
         for (int t : threadCounts) {
             GameOfLifeSeq seq = new GameOfLifeSeq(1000, 1000, 1);
-            GameOfLifePar par = new GameOfLifePar(1000, 1000, t, 1);
+            GameOfLifePar par = new GameOfLifePar(1000, 1000, t, t, 1);
             for (int i = 0; i < 10; i++) {
                 seq.computeStep();
                 par.computeStep();

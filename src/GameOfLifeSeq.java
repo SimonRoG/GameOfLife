@@ -14,8 +14,10 @@ public class GameOfLifeSeq implements LifeEngine {
 
     public GameOfLifeSeq(int rows, int cols, long seed) {
         this(rows, cols);
-        Random rng = new Random(seed);
-        for (int i = 0; i < grid.length; i++) grid[i] = rng.nextBoolean();
+        for (int r = 0; r < ROWS; r++) {
+            Random rng = new Random(seed + r);
+            for (int c = 0; c < COLS; c++) grid[r * COLS + c] = rng.nextBoolean();
+        }
     }
 
     @Override

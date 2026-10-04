@@ -2,41 +2,69 @@ import java.util.Arrays;
 
 public class Test {
 
-    static void gliderTest() {
-        int n = 5;
-        GameOfLifePar g = new GameOfLifePar(n, n, 4);
+    static boolean passed = true;
+
+    static void check(String name, boolean ok) {
+        if (!ok) passed = false;
+        System.out.println(name + ": " + (ok ? "OK" : "FAIL"));
+    }
+
+    static boolean[] gliderInit(int n) {
+        boolean[] g = new boolean[n * n];
         // _ @ _ _
         // _ _ @ _
         // @ @ @ _
         // _ _ _ _
-        g.grid[0 * n + 1] = g.grid[1 * n + 2] = g.grid[2 * n + 0] = g.grid[2 * n + 1] = g.grid[2 * n + 2] = true;
-        for (int i = 0; i < 4; i++) g.computeStep();
-        boolean[] exp = new boolean[n * n];
+        g[0 * n + 1] = g[1 * n + 2] = g[2 * n + 0] = g[2 * n + 1] = g[2 * n + 2] = true;
+        return g;
+    }
+
+    static boolean[] gliderExp(int n) {
+        boolean[] g = new boolean[n * n];
         // _ _ _ _
         // _ _ @ _
         // _ _ _ @
         // _ @ @ @
-        exp[1 * n + 2] = exp[2 * n + 3] = exp[3 * n + 1] = exp[3 * n + 2] = exp[3 * n + 3] = true;
-        System.out.println("glider test: " + (Arrays.equals(exp, g.grid) ? "OK" : "FAIL"));
-        g.shutdown();
+        g[1 * n + 2] = g[2 * n + 3] = g[3 * n + 1] = g[3 * n + 2] = g[3 * n + 3] = true;
+        return g;
     }
 
-    static void benchmarkTest() {
-        int[] sizes = { 500, 1000, 2000, 4000, 8000 };
-        int steps = 10;
-        System.out.println("\n| N | T |");
-        System.out.println("| --- | --- |");
-        for (int n : sizes) {
-            GameOfLifePar g = new GameOfLifePar(n, n, 4, 1);
-            long total = 0;
-            for (int i = 0; i < steps; i++) total += g.measureStep();
-            System.out.println("| " + n + " | " + total / steps + " |");
-            g.shutdown();
+    static void gliderSeqTest() {
+        int n = 5;
+        GameOfLifeSeq seq = new GameOfLifeSeq(n, n);
+        System.arraycopy(gliderInit(n), 0, seq.grid, 0, n * n);
+        for (int i = 0; i < 4; i++) seq.computeStep();
+        check("glider seq", Arrays.equals(gliderExp(n), seq.grid));
+    }
+
+    static void gliderParTest() {
+        int n = 5;
+        GameOfLifePar par = new GameOfLifePar(n, n, 4);
+        System.arraycopy(gliderInit(n), 0, par.grid, 0, n * n);
+        for (int i = 0; i < 4; i++) par.computeStep();
+        check("glider par", Arrays.equals(gliderExp(n), par.grid));
+        par.shutdown();
+    }
+
+    static void seqParTest() {
+        int cores = Runtime.getRuntime().availableProcessors();
+        int[] threadCounts = { 1, 2, 4, cores, cores * 2 };
+        for (int t : threadCounts) {
+            GameOfLifeSeq seq = new GameOfLifeSeq(1000, 1000, 1);
+            GameOfLifePar par = new GameOfLifePar(1000, 1000, t, 1);
+            for (int i = 0; i < 10; i++) {
+                seq.computeStep();
+                par.computeStep();
+            }
+            check("seq = par. t = " + t, Arrays.equals(seq.grid, par.grid));
+            par.shutdown();
         }
     }
 
     public static void main(String[] args) {
-        gliderTest();
-        benchmarkTest();
+        gliderSeqTest();
+        gliderParTest();
+        System.out.println();
+        seqParTest();
     }
 }

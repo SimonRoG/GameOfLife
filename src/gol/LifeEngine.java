@@ -36,10 +36,10 @@ public abstract class LifeEngine {
         return (grid[row + l] ? 1 : 0) + (grid[row + c] ? 1 : 0) + (grid[row + rt] ? 1 : 0);
     }
 
-    public long measureStep() {
-        long t = System.currentTimeMillis();
+    public double measureStep() {
+        long t = System.nanoTime();
         computeStep();
-        return System.currentTimeMillis() - t;
+        return (System.nanoTime() - t) / 1_000_000.0;
     }
 
     public boolean[] grid() {

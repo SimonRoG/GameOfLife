@@ -1,21 +1,41 @@
 import gol.GameOfLifePar;
 import gol.GameOfLifeSeq;
+import gol.LifeEngine;
 
 public class Bench {
+
+    static String measure(LifeEngine e, int steps) {
+        double total = 0;
+        for (int i = 0; i < steps; i++) total += e.measureStep();
+        return String.format("%.2f", total / steps);
+    }
 
     public static void main(String[] args) {
         GameOfLifeSeq warmup = new GameOfLifeSeq(1000, 1000, 1);
         for (int i = 0; i < 100; i++) warmup.computeStep();
 
-        int[] sizes = { 500, 1000, 2000, 4000, 8000 };
+        int[] sizes = { 500, 1000, 2000, 4000, 8000, 16000 };
+        int[] threadCounts = { 1, 2, 4, 6, 12 };
         int steps = 20;
-        System.out.println("|  N  |  T  |");
-        System.out.println("| --- | --- |");
+
+        StringBuilder header = new StringBuilder("| N | T (seq)");
+        StringBuilder sep = new StringBuilder("| --- | ---");
+        for (int t : threadCounts) {
+            header.append(" | T (par, ").append(t).append(")");
+            sep.append(" | ---");
+        }
+        System.out.println(header + " |");
+        System.out.println(sep + " |");
+
         for (int n : sizes) {
             GameOfLifeSeq seq = new GameOfLifeSeq(n, n, 1);
-            long total = 0;
-            for (int i = 0; i < steps; i++) total += seq.measureStep();
-            System.out.println("| " + n + " | " + total / steps + " |");
+            StringBuilder row = new StringBuilder("| " + n + " | " + measure(seq, steps));
+            for (int t : threadCounts) {
+                GameOfLifePar par = new GameOfLifePar(n, n, t, 1);
+                row.append(" | ").append(measure(par, steps));
+                par.shutdown();
+            }
+            System.out.println(row + " |");
         }
     }
 }

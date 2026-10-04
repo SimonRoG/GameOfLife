@@ -3,7 +3,7 @@ package gol;
 public abstract class LifeEngine {
 
     final int ROWS, COLS;
-    boolean[] grid, next;
+    public boolean[] grid, next;
 
     LifeEngine(int rows, int cols) {
         ROWS = rows;

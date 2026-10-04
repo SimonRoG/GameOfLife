@@ -14,12 +14,12 @@ public class GameOfLife extends Canvas {
         FG = 0xFFd4d4d4;
 
     private final LifeEngine engine = new GameOfLifePar(ROWS, COLS, 4, 1);
-    volatile boolean running = false;
+    public volatile boolean running = false;
     private volatile int delay = 100;
     private Thread gameThread;
     private BufferedImage buffer;
     private int[] pixels;
-    final JButton startBtn = new JButton("Start");
+    public final JButton startBtn = new JButton("Start");
 
     public GameOfLife() {
         setPreferredSize(new Dimension(COLS * CELL, ROWS * CELL));
@@ -98,7 +98,7 @@ public class GameOfLife extends Canvas {
         paintAll();
     }
 
-    void startGame() {
+    public void startGame() {
         if (running) return;
         running = true;
         gameThread = new Thread(() -> {
@@ -118,17 +118,17 @@ public class GameOfLife extends Canvas {
         gameThread.start();
     }
 
-    void stopGame() {
+    public void stopGame() {
         running = false;
         if (gameThread != null) gameThread.interrupt();
     }
 
-    synchronized void singleStep() {
+    public synchronized void singleStep() {
         computeStep();
         drawFrame();
     }
 
-    synchronized void clear() {
+    public synchronized void clear() {
         java.util.Arrays.fill(engine.grid(), false);
         java.util.Arrays.fill(pixels, BG);
         drawFrame();

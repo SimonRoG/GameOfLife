@@ -15,7 +15,8 @@ public class Bench {
         for (int i = 0; i < 100; i++) warmup.computeStep();
 
         int[] sizes = { 500, 1000, 2000, 4000, 8000, 16000 };
-        int[] threadCounts = { 1, 2, 4, 6, 12 };
+        int cores = Runtime.getRuntime().availableProcessors();
+        int[] threadCounts = { 1, 2, 4, cores, cores * 2 };
         int steps = 20;
 
         StringBuilder header = new StringBuilder("| N | T (seq)");
@@ -40,13 +41,16 @@ public class Bench {
 
         System.out.println();
 
-        int threads = 6;
-        int[] taskMults = { 1, 2, 4, 6, 10, 20 };
+        int threads = Runtime.getRuntime().availableProcessors();
+        int[] taskMults = { 1, 5, 10, 20, 30, 50 };
 
         StringBuilder header2 = new StringBuilder("| N");
         StringBuilder sep2 = new StringBuilder("| ---");
         for (int m : taskMults) {
-            header2.append(" | ").append(threads * m).append(" tasks");
+            header2
+                .append(" | ")
+                .append(threads * m)
+                .append(" tasks");
             sep2.append(" | ---");
         }
         System.out.println(header2 + " |");

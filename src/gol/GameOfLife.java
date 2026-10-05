@@ -9,13 +9,20 @@ public class GameOfLife extends Canvas {
 
     private static final int ROWS = 50,
         COLS = 100,
-        CELL = 12;
+        CELL = 12,
+        CORES = Runtime.getRuntime().availableProcessors(),
+        SEED = 1;
     private static final int BG = 0xFF1e1e1e,
         FG = 0xFFd4d4d4;
 
-    private final LifeEngine engine = new GameOfLifePar(ROWS, COLS, 4, 1);
+    private final LifeEngine engine = new GameOfLifePar(ROWS, COLS, CORES * 10, CORES, SEED);
     public volatile boolean running = false;
     private volatile int delay = 100;
+
+    public void setDelay(int ms) {
+        delay = ms;
+    }
+
     private Thread gameThread;
     private BufferedImage buffer;
     private int[] pixels;

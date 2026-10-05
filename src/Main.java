@@ -38,6 +38,25 @@ public class Main {
                 bar.add(btn);
             }
 
+            JLabel delayLabel = new JLabel("100 ms");
+            delayLabel.setForeground(Color.LIGHT_GRAY);
+            JSlider speed = new JSlider(0, 200, 100);
+            speed.setBackground(Color.DARK_GRAY);
+            speed.addChangeListener(e -> {
+                int v = speed.getValue();
+                game.setDelay(v);
+                delayLabel.setText(v + " ms");
+            });
+            bar.add(
+                new JLabel("Delay:") {
+                    {
+                        setForeground(Color.LIGHT_GRAY);
+                    }
+                }
+            );
+            bar.add(speed);
+            bar.add(delayLabel);
+
             frame.add(game, BorderLayout.CENTER);
             frame.add(bar, BorderLayout.NORTH);
             frame.pack();

@@ -4,10 +4,9 @@ import java.util.Arrays;
 
 public class Test {
 
-    static boolean passed = true;
+    static final int CORES = Runtime.getRuntime().availableProcessors();
 
     static void check(String name, boolean ok) {
-        if (!ok) passed = false;
         System.out.println(name + ": " + (ok ? "OK" : "FAIL"));
     }
 
@@ -41,7 +40,7 @@ public class Test {
 
     static void gliderParTest() {
         int n = 5;
-        GameOfLifePar par = new GameOfLifePar(n, n, 4, 4);
+        GameOfLifePar par = new GameOfLifePar(n, n, CORES, CORES);
         System.arraycopy(gliderInit(n), 0, par.grid, 0, n * n);
         for (int i = 0; i < 4; i++) par.computeStep();
         check("glider par", Arrays.equals(gliderExp(n), par.grid));
@@ -49,8 +48,7 @@ public class Test {
     }
 
     static void seqParTest() {
-        int cores = Runtime.getRuntime().availableProcessors();
-        int[] threadCounts = { 1, 2, 4, cores, cores * 2 };
+        int[] threadCounts = { 1, 2, 4, CORES, CORES * 2 };
         for (int t : threadCounts) {
             GameOfLifeSeq seq = new GameOfLifeSeq(1000, 1000, 1);
             GameOfLifePar par = new GameOfLifePar(1000, 1000, t, t, 1);

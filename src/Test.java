@@ -79,7 +79,10 @@ public class Test {
         GameOfLifeSeq seq = new GameOfLifeSeq(n, n);
         System.arraycopy(blinkerInit(n), 0, seq.grid, 0, n * n);
         seq.computeStep();
-        check("blinker seq", Arrays.equals(blinkerExp(n), seq.grid));
+        if (Arrays.equals(blinkerExp(n), seq.grid)) {
+            seq.computeStep();
+            check("blinker seq", Arrays.equals(blinkerInit(n), seq.grid));
+        } else check("blinker seq", Arrays.equals(blinkerExp(n), seq.grid));
     }
 
     static void gliderParTest() {
@@ -105,7 +108,10 @@ public class Test {
         GameOfLifePar par = new GameOfLifePar(n, n, CORES, CORES);
         System.arraycopy(blinkerInit(n), 0, par.grid, 0, n * n);
         par.computeStep();
-        check("blinker par", Arrays.equals(blinkerExp(n), par.grid));
+        if (Arrays.equals(blinkerExp(n), par.grid)) {
+            par.computeStep();
+            check("blinker par", Arrays.equals(blinkerInit(n), par.grid));
+        } else check("blinker par", Arrays.equals(blinkerExp(n), par.grid));
         par.shutdown();
     }
 

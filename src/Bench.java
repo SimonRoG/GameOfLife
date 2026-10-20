@@ -7,6 +7,7 @@ public class Bench {
     static String measure(LifeEngine e, int steps) {
         double total = 0;
         for (int i = 0; i < steps; i++) total += e.measureStep();
+        if (e instanceof GameOfLifePar p) p.shutdown();
         return String.format("%.2f", total / steps);
     }
 
@@ -34,7 +35,6 @@ public class Bench {
             for (int t : threadCounts) {
                 GameOfLifePar par = new GameOfLifePar(n, n, t, t, 1);
                 row.append(" | ").append(measure(par, steps));
-                par.shutdown();
             }
             System.out.println(row + " |");
         }
@@ -61,7 +61,6 @@ public class Bench {
             for (int m : taskMults) {
                 GameOfLifePar par = new GameOfLifePar(n, n, threads * m, threads, 1);
                 row.append(" | ").append(measure(par, steps));
-                par.shutdown();
             }
             System.out.println(row + " |");
         }

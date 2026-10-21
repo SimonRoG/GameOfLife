@@ -53,13 +53,13 @@ At N>=2000 the step time is flat across 6-300 tasks. Overhead becomes visible on
 
 ## Build
 
-```
+```bash
 javac -d bin src/gol/*.java src/*.java
 ```
 
 ## Run
 
-```
+```bash
 java -cp bin Main     # GUI
 java -cp bin Test     # correctness tests
 java -cp bin Bench    # benchmark

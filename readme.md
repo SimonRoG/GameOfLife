@@ -4,7 +4,7 @@ Sequential and parallel implementations of Conway's Game of Life in Java. Parall
 
 ## Demo
 
-<video src="report/img/demo.mp4" controls width="100%"></video>
+[![Demp](https://raw.githubusercontent.com/SimonRoG/GameOfLife/raw/refs/heads/main/report/img/demo.png)](https://raw.githubusercontent.com/SimonRoG/GameOfLife/raw/refs/heads/main/report/img/demo.mp4)
 
 ## Implementation
 
